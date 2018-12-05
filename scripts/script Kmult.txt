@@ -1,0 +1,20 @@
+
+require (ape); require (geomorph)
+
+# Reading the tps
+Color<-readland.tps("CollserolaColor.tps", specID="ID")
+
+# Getting the information of the landmarks that should be considered as semilandmarks
+curveslide<-read.csv("curveslide.csv", header=T)
+curveslide<-as.matrix(curveslide)
+
+# Computing the GPA
+mod<-gpagen(Color) # si queremos que todos los puntos de la curva sean landmarks
+mod2<-gpagen(Color, curves=curveslide) # si queremos que sean semilandmarks.
+
+# Reading the phylogenetic tree
+tree<-read.nexus("arbolcollserola.nex")
+
+# Computing the multidimensional K
+physignal(tree,mod$coords,method="Kmult",iter=400)
+

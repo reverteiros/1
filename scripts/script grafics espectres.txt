@@ -1,0 +1,53 @@
+
+a<-read.table("per plots.txt", header=T)
+
+attach(a)
+
+names(a)
+
+plot(Calb.pa)
+
+
+plot(Wavelength, Eseg.ca, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Euphorbia segetalis reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Prho.ca, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Papaver rhoeas reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Olat.ga, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Orobanche latisquama reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Scor.ga, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Scorpiurus muricatus reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Aarv.ga, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Anagallis arvensis reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Calb.pa, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Cistus albidus reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Blae.ga, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Biscutella laevigata reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Dpen.pa, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Doryncium pentaphyllum reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))
+
+
+plot(Wavelength, Onat.ca, xlab="Wavelength", col="blue", type="l",lwd=8,
+ylab="% Reflectance values", main="Ononis natrix reflection spectra", 
+cex.lab=1.5, cex.main=2, ylim=c(0,100))

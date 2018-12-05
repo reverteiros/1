@@ -1,0 +1,73 @@
+
+espectros <- read.table("espectros 1 medida por especie.txt", header=T)
+pols <- read.table("DATABASE2.txt", header=T)
+attach(data)
+
+
+pols<-data.frame(A,HOR,AVI,COL,DIP,LEP)
+
+UV <- data.frame(espectros[1:100])
+blue <- data.frame(espectros[101:200])
+green <- data.frame(espectros[201:300])
+yellow <- data.frame(espectros[301:401])
+
+uv<-rowSums(UV)
+bl<-rowSums(blue)
+ye<-rowSums(green)
+re<-rowSums(yellow)
+T<-rowSums(espectros)
+
+U<-uv/T
+B<-bl/T
+Y<-ye/T
+R<-re/T
+
+LM <- R-B
+MS <- Y-U
+plot(MS,LM,xlim=c(-1,1),ylim=c(-1,1))
+
+##### extrems del rombe
+
+# LM =  1 - MS
+# LM = -1 + MS
+# LM = -1 - MS
+# LM =  1 + MS
+
+x<-c(-1,0,1,0,-1)
+y<-c(0,1,0,-1,0)
+plot(x,y, type="l")
+
+
+x1<-c(-1,1)
+x2<-c(0,0)
+
+y1<-c(0,0)
+y2<-c(-1,1)
+
+plot(x,y, type="l")
+par(new=TRUE)
+plot(x1,x2, type="l")
+par(new=TRUE)
+plot(y1,y2, type="l")
+par(new=TRUE)
+plot(MS,LM,xlim=c(-1,1),ylim=c(-1,1))
+
+
+C <- sqrt((LM)^2+(MS)^2)
+H <- asin(MS/C)
+
+
+
+quadrant<-100*400
+
+newT<-T/quadrant
+
+variables<-data.frame(newT,C,H)
+
+dist<-vegdist(variables, method="euclidean", binary=FALSE)
+
+pols.dist<-vegdist(pols, method="bray", binary=FALSE)
+
+mantel(pols.dist,dist)
+
+

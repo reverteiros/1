@@ -1,0 +1,20 @@
+
+database<-read.table("DATABASE - copia.txt", header=T)
+attach(database)
+names(database)
+
+taula<-data.frame(A,HOR,AVI,COL,DIP,LEP)
+taula
+aggregate(taula)
+
+taulaag<-aggregate(taula,list(CATEGORIA),mean)
+
+
+
+N<-summary(CATEGORIA)
+taula2<-data.frame(N,taulaag)
+sort(taula2)
+attach(taula2)
+taula2[order(N),]
+
+write.csv(taula2,"D:\\Usuarios\\s.reverte\\Desktop\\MASTER\\Databases i arbres\\InsectsByColourCategory.csv")

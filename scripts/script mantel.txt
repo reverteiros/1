@@ -1,0 +1,23 @@
+
+library(vegan)
+
+a<-read.table("mantel3.txt", header=T)
+
+attach(a)
+
+colors<-data.frame(INT350,INT450,INT550,INT650)
+
+percolors<-data.frame(PER350,PER450,PER550,PER650)
+
+pols<-data.frame(A,AVI,HOR,COL,DIP,LEP)
+
+pols.dist<-vegdist(pols, method="bray", binary=FALSE)
+
+int.dist<-vegdist(colors, method="bray", binary=FALSE)
+
+per.dist<-vegdist(percolors, method="bray", binary=FALSE)
+
+mantel(pols.dist,int.dist)
+
+mantel(pols.dist,per.dist)
+

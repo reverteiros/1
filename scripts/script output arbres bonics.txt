@@ -1,0 +1,21 @@
+
+## Si tienes los arboles en NEXUS
+
+library(phytools)
+
+arbrecanet<-read.nexus("arbre_85_especies_amb_noms.nex")
+
+plot.phylo(arbrecanet, cex=0.19, font=1, edge.width=0.5)
+
+add.scale.bar(arbrecanet, lwd=2, length=50, ask=T)
+
+
+## Si tienes los arboles en NEWICK
+
+library(phytools)
+
+arbrecanet<-read.tree("arbrecanet.txt")
+
+plot.phylo(arbrecanet)
+
+add.scale.bar(arbrecanet, lwd=2, length=100, ask=T)

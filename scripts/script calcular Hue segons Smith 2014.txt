@@ -1,0 +1,12 @@
+calcHue<-function(R=R,Y=Y,G=G,B=B, format="degrees"){ 
+    MS=Y-B 
+    LM=R-G
+    chroma=sqrt(LM^2+MS^2) 
+    unmod<-sign(MS)*acos(LM/chroma) 
+    hue<-unmod%%(2*pi) 
+    if (format=="degrees") { 
+      hue<-hue*(180/pi) }
+      else {
+        return(hue) 
+      }
+}

@@ -1,0 +1,39 @@
+
+library(vegan)
+
+set.seed(2)
+
+variables<-read.table("variablescanet.txt", header=T)
+variables<-read.table("variablescollserola.txt", header=T)
+variables<-read.table("variablesgarraf.txt", header=T)
+variables<-read.table("variablespapiol.txt", header=T)
+variables<-read.table("DATABASE.txt", header=T)
+attach(variables)
+names(variables)
+
+X350<-X.350
+X450<-X.450
+X550<-X.550
+X650<-X.650
+
+percolors<-data.frame(X350,X450,X550,X650)
+
+
+pols<-data.frame(BEE,ANT,WASP,COL,DIP,LEP)
+
+x<-CCorA(pols, percolors, nperm=999)
+
+biplot(x$corr.X.Cx,x$corr.Y.Cy, cex=c(1,1.5))
+
+x$p.Pillai
+x$p.perm
+
+## ROTAR CCA ##
+
+angle <- pi/0.85
+M <- matrix( c(cos(angle), -sin(angle), sin(angle), cos(angle)), 2, 2 )
+aux1<-x$corr.X.Cx[,1:2]
+aux2<-x$corr.Y.Cy[,1:2]
+AUX1<-as.matrix(aux1)%*%M
+AUX2<-as.matrix(aux2)%*%M
+biplot(AUX1,AUX2, cex=c(1,1.2))

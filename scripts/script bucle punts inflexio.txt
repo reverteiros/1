@@ -1,0 +1,57 @@
+espectres <- read.table("espectres 2.txt", header=T)
+attach(espectres)
+flowers<-espectres[,-1]
+
+mat <- matrix(, nrow = ncol(flowers), ncol=2)
+rownames(mat)<-rownames(mat, do.NULL = FALSE, colnames(flowers))
+
+for(i in 1:109){
+  a<-flowers[,i]
+  b<-numeric(401)
+  for(j in 26:374){
+    s<-(a[j+25])-(a[j-25])
+    if(s > 20) {
+      b[j]<-s  
+    }
+  }
+  
+  p<-numeric()
+  p[1]<-0
+  p[2]<-0
+  p[3]<-0
+  p[4]<-0
+  p[5]<-0
+  for(k in 6:396){
+    if(b[k]>0){
+      p[k]<-((b[k+5])-(b[k-5]))
+    } else {
+      p[k]<-0  
+    }
+  }
+  c<-numeric()
+  c[1]<-1
+  c[2]<-1
+  c[3]<-1
+  c[4]<-1
+  c[5]<-1
+  for(l in 6:396){
+    if(p[l]>0){
+      c[l]<-p[l]
+    } else {
+      c[l]<-1  
+    }
+  }
+  x<-which(c < 0.006)
+  
+  PI<-300+x
+  
+  if(length(PI) < 2) {
+    PI[2]<-1  
+  
+}
+mat[i,]<-PI
+
+}
+
+
+mat

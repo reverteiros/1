@@ -1,0 +1,43 @@
+
+library(phytools)
+
+arbre<-read.tree("arbre_total.txt")
+
+filogenia<-cophenetic(arbre)
+
+filo<-as.dist(filogenia)
+
+library(vegan)
+
+a<-read.table("DATABASE.txt", header=T)
+
+attach(a)
+
+colors<-data.frame(INT350,INT450,INT550,INT650)
+
+percolors<-data.frame(PER350,PER450,PER550,PER650)
+
+pols<-data.frame(BEE,ANT,WASP,COL,DIP,LEP)
+
+pols.dist<-vegdist(pols, method="bray", binary=FALSE)
+
+int.dist<-vegdist(colors, method="bray", binary=FALSE)
+
+per.dist<-vegdist(percolors, method="bray", binary=FALSE)
+
+brillo<-vegdist(BRIGHTNESS, method="euclidean", binary=FALSE)
+
+croma<-vegdist(CHROMA, method="euclidean", binary=FALSE)
+
+tono<-vegdist(HUE, method="euclidean", binary=FALSE)
+
+mantel.partial(pols.dist, int.dist, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+mantel.partial(pols.dist, per.dist, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+mantel.partial(pols.dist, brillo, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+mantel.partial(pols.dist, croma, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+mantel.partial(pols.dist, tono, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+

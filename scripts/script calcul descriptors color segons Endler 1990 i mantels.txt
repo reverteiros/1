@@ -1,0 +1,381 @@
+
+### Obre taules de dades
+espectros <- read.table("espectros 1 medida por especie_ordre_arbre2.txt", header=T)
+data <- read.table("DATABASE_ordre_arbre2.txt", header=T)
+attach(data)
+
+TOTAL<-data.frame(A,HOR,AVI,COL,DIP,LEP)
+
+## Calcula la proporció de cada banda respecte el total de l'espectre
+
+UV <- data.frame(espectros[5:104])
+blue <- data.frame(espectros[105:204])
+green <- data.frame(espectros[205:304])
+yellow <- data.frame(espectros[305:405])
+
+uv<-rowSums(UV)
+bl<-rowSums(blue)
+ye<-rowSums(green)
+re<-rowSums(yellow)
+T<-rowSums(espectros[5:405])
+f
+B<-uv/T
+G<-bl/T
+Y<-ye/T
+R<-re/T
+
+colors<-data.frame(B,G,Y,R)
+
+## Calcul de Brightness i Chroma segons Endler 1990
+
+LM <- R-G
+MS <- Y-B
+
+## Calcul de la Hue segons Smith 2014
+
+calcHue<-function(R=R,Y=Y,G=G,B=B, format="degrees"){ 
+    MS=Y-B 
+    LM=R-G
+    chroma=sqrt(LM^2+MS^2) 
+    unmod<-sign(MS)*acos(LM/chroma) 
+    hue<-unmod%%(2*pi) 
+    if (format=="degrees") { 
+      hue<-hue*(180/pi) }
+      else {
+        return(hue) 
+      }
+}
+
+BRIGHTNESS<-rowSums(espectros[5:405])
+CHROMA <- sqrt((LM)^2+(MS)^2)
+HUE <- calcHue(R,Y,G,B,"radians")
+
+
+library(ape)
+
+arbre<-read.nexus("arbolcontodaslaspoblaciones.nex")
+filogenia<-cophenetic(arbre)
+filo<-as.dist(filogenia)
+
+library(vegan)
+
+pols.dist<-vegdist(TOTAL, method="bray", binary=FALSE)
+colors.dist<-vegdist(colors, method="bray", binary=FALSE)
+
+brillo<-vegdist(BRIGHTNESS, method="euclidean", binary=FALSE)
+croma<-vegdist(CHROMA, method="euclidean", binary=FALSE)
+tono<-vegdist(HUE, method="euclidean", binary=FALSE)
+
+mantel.partial(pols.dist, colors.dist, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, brillo, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, croma, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, tono, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+
+#### PER COMUNITAT
+
+
+CAN<-data[grep("CAN", data$LOC, ignore.case=T),]
+CANET <- CAN[order(CAN$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+COL<-data[grep("COL", data$LOC, ignore.case=T),]
+COLLSEROLA <- COL[order(COL$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+GAR<-data[grep("GAR", data$LOC, ignore.case=T),]
+GARRAF <- GAR[order(GAR$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+PAP<-data[grep("PAP", data$LOC, ignore.case=T),]
+PAPIOL <- PAP[order(PAP$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+
+
+#### CANET
+
+CAN<-data[grep("CAN", data$LOC, ignore.case=T),]
+CANET <- CAN[order(CAN$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+ESPECTRESCAN <- espectros[grep("CAN", data$LOC, ignore.case=T),]
+ESPECTRESCANET <- ESPECTRESCAN[order(ESPECTRESCAN$Ordre_arbre),]
+
+
+## Calcula la proporció de cada banda respecte el total de l'espectre
+
+UV <- data.frame(ESPECTRESCANET[5:104])
+blue <- data.frame(ESPECTRESCANET[105:204])
+green <- data.frame(ESPECTRESCANET[205:304])
+yellow <- data.frame(ESPECTRESCANET[305:405])
+
+uv<-rowSums(UV)
+bl<-rowSums(blue)
+ye<-rowSums(green)
+re<-rowSums(yellow)
+T<-rowSums(ESPECTRESCANET[5:405])
+
+B<-uv/T
+G<-bl/T
+Y<-ye/T
+R<-re/T
+
+colors<-data.frame(B,G,Y,R)
+
+## Calcul de Brightness i Chroma segons Endler 1990
+
+LM <- R-G
+MS <- Y-B
+
+## Calcul de la Hue segons Smith 2014
+
+calcHue<-function(R=R,Y=Y,G=G,B=B, format="degrees"){ 
+  MS=Y-B 
+  LM=R-G
+  chroma=sqrt(LM^2+MS^2) 
+  unmod<-sign(MS)*acos(LM/chroma) 
+  hue<-unmod%%(2*pi) 
+  if (format=="degrees") { 
+    hue<-hue*(180/pi) }
+  else {
+    return(hue) 
+  }
+}
+
+BRIGHTNESS<-rowSums(ESPECTRESCANET[5:405])
+CHROMA <- sqrt((LM)^2+(MS)^2)
+HUE <- calcHue(R,Y,G,B,"radians")
+
+
+library(ape)
+
+arbre<-read.nexus("arbolcanet.nex")
+filogenia<-cophenetic(arbre)
+filo<-as.dist(filogenia)
+
+library(vegan)
+
+pols.dist<-vegdist(CANET, method="bray", binary=FALSE)
+colors.dist<-vegdist(colors, method="bray", binary=FALSE)
+
+brillo<-vegdist(BRIGHTNESS, method="euclidean", binary=FALSE)
+croma<-vegdist(CHROMA, method="euclidean", binary=FALSE)
+tono<-vegdist(HUE, method="euclidean", binary=FALSE)
+
+mantel.partial(pols.dist, colors.dist, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, brillo, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, croma, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, tono, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+
+#### COLLSEROLA
+
+COL<-data[grep("COL", data$LOC, ignore.case=T),]
+COLLSEROLA <- COL[order(COL$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+ESPECTRESCOL <- espectros[grep("COL", data$LOC, ignore.case=T),]
+ESPECTRESCOLLSEROLA <- ESPECTRESCOL[order(ESPECTRESCOL$Ordre_arbre),]
+
+
+## Calcula la proporció de cada banda respecte el total de l'espectre
+
+UV <- data.frame(ESPECTRESCOLLSEROLA[5:104])
+blue <- data.frame(ESPECTRESCOLLSEROLA[105:204])
+green <- data.frame(ESPECTRESCOLLSEROLA[205:304])
+yellow <- data.frame(ESPECTRESCOLLSEROLA[305:405])
+
+uv<-rowSums(UV)
+bl<-rowSums(blue)
+ye<-rowSums(green)
+re<-rowSums(yellow)
+T<-rowSums(ESPECTRESCOLLSEROLA[5:405])
+
+B<-uv/T
+G<-bl/T
+Y<-ye/T
+R<-re/T
+
+colors<-data.frame(B,G,Y,R)
+
+## Calcul de Brightness i Chroma segons Endler 1990
+
+LM <- R-G
+MS <- Y-B
+
+## Calcul de la Hue segons Smith 2014
+
+calcHue<-function(R=R,Y=Y,G=G,B=B, format="degrees"){ 
+  MS=Y-B 
+  LM=R-G
+  chroma=sqrt(LM^2+MS^2) 
+  unmod<-sign(MS)*acos(LM/chroma) 
+  hue<-unmod%%(2*pi) 
+  if (format=="degrees") { 
+    hue<-hue*(180/pi) }
+  else {
+    return(hue) 
+  }
+}
+
+BRIGHTNESS<-rowSums(ESPECTRESCOLLSEROLA[5:405])
+CHROMA <- sqrt((LM)^2+(MS)^2)
+HUE <- calcHue(R,Y,G,B,"radians")
+
+
+library(ape)
+
+arbre<-read.nexus("arbolcollserola.nex")
+filogenia<-cophenetic(arbre)
+filo<-as.dist(filogenia)
+
+library(vegan)
+
+pols.dist<-vegdist(COLLSEROLA, method="bray", binary=FALSE)
+colors.dist<-vegdist(colors, method="bray", binary=FALSE)
+
+brillo<-vegdist(BRIGHTNESS, method="euclidean", binary=FALSE)
+croma<-vegdist(CHROMA, method="euclidean", binary=FALSE)
+tono<-vegdist(HUE, method="euclidean", binary=FALSE)
+
+mantel.partial(pols.dist, colors.dist, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, brillo, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, croma, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, tono, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+
+#### GARRAF
+
+GAR <-data[grep("GAR", data$LOC, ignore.case=T),]
+GARRAF <- GAR[order(GAR$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+ESPECTRESGAR <- espectros[grep("GAR", data$LOC, ignore.case=T),]
+ESPECTRESGARRAF <- ESPECTRESGAR[order(ESPECTRESGAR$Ordre_arbre),]
+
+## Calcula la proporció de cada banda respecte el total de l'espectre
+
+UV <- data.frame(ESPECTRESGARRAF[5:104])
+blue <- data.frame(ESPECTRESGARRAF[105:204])
+green <- data.frame(ESPECTRESGARRAF[205:304])
+yellow <- data.frame(ESPECTRESGARRAF[305:405])
+
+uv<-rowSums(UV)
+bl<-rowSums(blue)
+ye<-rowSums(green)
+re<-rowSums(yellow)
+T<-rowSums(ESPECTRESGARRAF[5:405])
+
+B<-uv/T
+G<-bl/T
+Y<-ye/T
+R<-re/T
+
+colors<-data.frame(B,G,Y,R)
+
+## Calcul de Brightness i Chroma segons Endler 1990
+
+LM <- R-G
+MS <- Y-B
+
+## Calcul de la Hue segons Smith 2014
+
+calcHue<-function(R=R,Y=Y,G=G,B=B, format="degrees"){ 
+  MS=Y-B 
+  LM=R-G
+  chroma=sqrt(LM^2+MS^2) 
+  unmod<-sign(MS)*acos(LM/chroma) 
+  hue<-unmod%%(2*pi) 
+  if (format=="degrees") { 
+    hue<-hue*(180/pi) }
+  else {
+    return(hue) 
+  }
+}
+
+BRIGHTNESS<-rowSums(ESPECTRESGARRAF[5:405])
+CHROMA <- sqrt((LM)^2+(MS)^2)
+HUE <- calcHue(R,Y,G,B,"radians")
+
+
+library(ape)
+
+arbre<-read.nexus("arbolgarraf.nex")
+filogenia<-cophenetic(arbre)
+filo<-as.dist(filogenia)
+
+library(vegan)
+
+pols.dist<-vegdist(GARRAF, method="bray", binary=FALSE)
+colors.dist<-vegdist(colors, method="bray", binary=FALSE)
+
+brillo<-vegdist(BRIGHTNESS, method="euclidean", binary=FALSE)
+croma<-vegdist(CHROMA, method="euclidean", binary=FALSE)
+tono<-vegdist(HUE, method="euclidean", binary=FALSE)
+
+mantel.partial(pols.dist, colors.dist, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, brillo, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, croma, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, tono, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+
+
+#### PAPIOL
+
+
+PAP<-data[grep("PAP", data$LOC, ignore.case=T),]
+PAPIOL <- PAP[order(PAP$Ordre_arbre),c('A','HOR','AVI','COL','DIP','LEP')] 
+ESPECTRESPAP <- espectros[grep("PAP", data$LOC, ignore.case=T),]
+ESPECTRESPAPIOL <- ESPECTRESPAP[order(ESPECTRESPAP$Ordre_arbre),]
+
+
+## Calcula la proporció de cada banda respecte el total de l'espectre
+
+UV <- data.frame(ESPECTRESPAPIOL[5:104])
+blue <- data.frame(ESPECTRESPAPIOL[105:204])
+green <- data.frame(ESPECTRESPAPIOL[205:304])
+yellow <- data.frame(ESPECTRESPAPIOL[305:405])
+
+uv<-rowSums(UV)
+bl<-rowSums(blue)
+ye<-rowSums(green)
+re<-rowSums(yellow)
+T<-rowSums(ESPECTRESPAPIOL[5:405])
+
+B<-uv/T
+G<-bl/T
+Y<-ye/T
+R<-re/T
+
+colors<-data.frame(B,G,Y,R)
+
+## Calcul de Brightness i Chroma segons Endler 1990
+
+LM <- R-G
+MS <- Y-B
+
+## Calcul de la Hue segons Smith 2014
+
+calcHue<-function(R=R,Y=Y,G=G,B=B, format="degrees"){ 
+  MS=Y-B 
+  LM=R-G
+  chroma=sqrt(LM^2+MS^2) 
+  unmod<-sign(MS)*acos(LM/chroma) 
+  hue<-unmod%%(2*pi) 
+  if (format=="degrees") { 
+    hue<-hue*(180/pi) }
+  else {
+    return(hue) 
+  }
+}
+
+BRIGHTNESS<-rowSums(ESPECTRESPAPIOL[5:405])
+CHROMA <- sqrt((LM)^2+(MS)^2)
+HUE <- calcHue(R,Y,G,B,"radians")
+
+
+library(ape)
+
+arbre<-read.nexus("arbolpapiol.nex")
+filogenia<-cophenetic(arbre)
+filo<-as.dist(filogenia)
+
+library(vegan)
+
+pols.dist<-vegdist(PAPIOL, method="bray", binary=FALSE)
+colors.dist<-vegdist(colors, method="bray", binary=FALSE)
+
+brillo<-vegdist(BRIGHTNESS, method="euclidean", binary=FALSE)
+croma<-vegdist(CHROMA, method="euclidean", binary=FALSE)
+tono<-vegdist(HUE, method="euclidean", binary=FALSE)
+
+mantel.partial(pols.dist, colors.dist, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, brillo, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, croma, filo, method = "pearson", permutations = 999, na.rm = FALSE)
+mantel.partial(pols.dist, tono, filo, method = "pearson", permutations = 999, na.rm = FALSE)
